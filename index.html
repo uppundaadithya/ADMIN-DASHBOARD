@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Dashboard</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+body > *:not(footer) {
+  flex: 1 0 auto;
+}
+
+footer {
+  flex-shrink: 0;
+}
+
+    body {
+      background: linear-gradient(to bottom, rgb(244, 248, 242), rgb(255, 244, 223));
+      background-size: 150% 100%;
+      background-attachment: fixed;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      min-height: 100vh;
+      height: 100vh;
+      width: 100%;
+      overflow-x: hidden;
+    }
+
+    th, td {
+      border: 1px solid #000000;
+      padding: 15px;
+      text-align: left;
+    }
+
+    .inputarea1 {
+      text-align: center;
+      width: 100%;
+      margin-bottom: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .inputarea1 h1 {
+      font-size: 1.8rem;
+      margin: 5px 0;
+      text-align: center;
+    }
+
+    #DR {
+      border-bottom: solid rgb(125, 18, 18) 2px;
+      width: 60%;
+    }
+
+    img {
+      border-radius: 50px;
+      height: 80px;
+      width: 80px;
+    }
+
+    button {
+      background-color: #630101;
+      color: aliceblue;
+      width: 100px;
+      outline: none;
+      border: none;
+      margin: 5px;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      border-radius: 20px;
+      padding: 5px;
+      cursor: pointer;
+    }
+
+    .inputarea {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: rgba(54, 237, 149, 0.129);
+      padding: 40px 20px;
+      margin: 20px;
+      width: 90%;
+      max-width: 600px;
+      border-radius: 20px;
+      gap: 15px;
+      transition: 2s ease-in-out;
+    }
+
+    h2 {
+      color: #630101;
+      padding: 8px;
+      border-radius: 23px;
+      background-color: rgba(255, 242, 226, 0.336);
+      border: solid #e00b0b4f 0.5px;
+    }
+
+    .btns {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .inputarea6 {
+      width: 100%;
+      overflow-x: auto;
+      margin-top: 20px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 800px;
+    }
+
+    footer {
+      background: #6e0b1f;
+      color: #fff;
+      width: 100%;
+      text-align: center;
+      padding: 15px 10px;
+      font-size: 14px;
+      box-shadow: 0 -3px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    footer p {
+      margin: 4px 0;
+      font-weight: 500;
+    }
+
+    @media screen and (max-width: 768px) {
+      .inputarea1 h1 {
+        font-size: 1.3rem;
+      }
+
+      img {
+        height: 60px;
+        width: 60px;
+      }
+
+      button {
+        width: 100%;
+        font-size: 14px;
+      }
+
+      th, td {
+        padding: 10px;
+        font-size: 14px;
+      }
+    }
+
+    @media screen and (max-width: 480px) {
+      .inputarea1 h1 {
+        font-size: 1.1rem;
+      }
+
+      .btns {
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      table {
+        min-width: 100%;
+      }
+
+      .inputarea6 {
+        padding: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="inputarea1">
+    <img src="download.jpg" alt="">
+    <h1>DR.B.B. HEGDE FIRST GRADE COLLEGE</h1>
+    <h1 id="DR"></h1>
+    <h1>Kundapura</h1>
+  </div>
+
+  <div class="inputarea1">
+    <h1>Admin Dashboard - Program Registrations</h1>
+
+    <div class="btns">
+      <a href="index.html"><button> Go to Registration</button></a>
+      <a href="approve.html"><button> View <br>Approved</button></a>
+    </div>
+
+    <div class="inputarea6">
+      <table>
+        <thead>
+          <tr>
+            <th>Program Name</th>
+            <th>Date</th>
+            <th>Coordinator</th>
+            <th>Phone</th>
+            <th>Resource Person</th>
+            <th>Venue</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="data-table"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <footer>
+    <p>&copy; Delopped by : Adithya( BCA )</p>
+  </footer>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-app.js";
+    import { getFirestore, collection, getDocs, deleteDoc, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBK-FCsvl2TgfuqLNg9RV80Fodnc0wXeps",
+      authDomain: "program-38391.firebaseapp.com",
+      projectId: "program-38391",
+      storageBucket: "program-38391.appspot.com",
+      messagingSenderId: "631653067819",
+      appId: "1:631653067819:web:9660a94a555d8ac17c4e6e",
+      measurementId: "G-H7WJ5NL8SN"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const table = document.getElementById("data-table");
+
+    async function loadData() {
+      table.innerHTML = "";
+      const snapshot = await getDocs(collection(db, "programs"));
+      snapshot.forEach(docSnap => {
+        const d = docSnap.data();
+        const id = docSnap.id;
+
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${d.programName}</td>
+          <td>${d.date}</td>
+          <td>${d.coordinator}</td>
+          <td>${d.phone}</td>
+          <td>${d.resourcePerson}</td>
+          <td>${d.venue}</td>
+          <td>
+            ${d.approved ? "✅ Approved" : `<button class="btn" onclick="approveRecord('${id}')">✅ Approve</button>`}
+            <br><br>
+            <button class="btn btn-danger" onclick="deleteRecord('${id}')">🗑️ Delete</button>
+          </td>
+        `;
+        table.appendChild(row);
+      });
+    }
+
+    async function deleteRecord(id) {
+      const confirmed = confirm("Are you sure you want to delete this record?");
+      if (!confirmed) return;
+      await deleteDoc(doc(db, "programs", id));
+      alert(" Record deleted successfully");
+      loadData();
+    }
+
+    async function approveRecord(id) {
+      const confirmed = confirm("Approve this program ?");
+      if (!confirmed) return;
+      await updateDoc(doc(db, "programs", id), { approved: true });
+      alert("Program approved.");
+      loadData();
+    }
+
+    window.deleteRecord = deleteRecord;
+    window.approveRecord = approveRecord;
+
+    loadData();
+  </script>
+</body>
+</html>
